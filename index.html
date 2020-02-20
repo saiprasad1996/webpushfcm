@@ -39,6 +39,7 @@
 notificationPermission()
 // registerServiceWorker() 
 async function notificationPermission() {
+    console.log("Notificatoin")
     let permissionGranted = false;
     try {
         /* request permission if not granted */
@@ -47,14 +48,15 @@ async function notificationPermission() {
         }
         /* get instance token if not available */
         if (localStorage.getItem('INSTANCE_TOKEN') !== null) {
-	   const messaging = firebase.messaging();         
+	//    const messaging = firebase.messaging();         
 	   permissionGranted = true;
-	    messaging.setBackgroundMessageHandler(function(payload){
+	    // messaging.setBackgroundMessageHandler(function(payload){
 
-	    console.log("firebase messaging handler")
-	})
+	//     console.log("firebase messaging handler")
+	// })
         } else {
             const token = await messaging.getToken(); // returns the same token on every invocation until refreshed by browser
+            console.log(token)
             // await this.sendTokenToDb(token);
             localStorage.setItem('INSTANCE_TOKEN', token);
             permissionGranted = true;

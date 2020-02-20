@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Push Notification
+
+    </title>
+</head>
+
+<body>
+    This site is a push notification expert
+<!-- The core Firebase JS SDK is always required and must be listed first -->
+<script src="https://www.gstatic.com/firebasejs/7.8.2/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/7.8.2/firebase-messaging.js"></script>
+
+<!-- TODO: Add SDKs for Firebase products that you want to use
+     https://firebase.google.com/docs/web/setup#available-libraries -->
+
+     
+    <script src="index.js" type="text/javascript"></script>
+<script type="text/javascript">
+  // Your web app's Firebase configuration
+  var firebaseConfig = {
+    apiKey: "AIzaSyCwosc2SuCizz62VxAV4mq_ooeWdJ4t5P4",
+    authDomain: "talky-53a8e.firebaseapp.com",
+    databaseURL: "https://talky-53a8e.firebaseio.com",
+    projectId: "talky-53a8e",
+    storageBucket: "talky-53a8e.appspot.com",
+    messagingSenderId: "831786464315",
+    appId: "1:831786464315:web:ee875d7999eb1a6e01581e"
+  };
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+
+  const messaging = firebase.messaging();
+notificationPermission()
+// registerServiceWorker() 
+async function notificationPermission() {
+    let permissionGranted = false;
+    try {
+        /* request permission if not granted */
+        if (Notification.permission !== 'granted') {
+            await messaging.requestPermission();
+        }
+        /* get instance token if not available */
+        if (localStorage.getItem('INSTANCE_TOKEN') !== null) {
+	   const messaging = firebase.messaging();         
+	   permissionGranted = true;
+	    messaging.setBackgroundMessageHandler(function(payload){
+
+	    console.log("firebase messaging handler")
+	})
+        } else {
+            const token = await messaging.getToken(); // returns the same token on every invocation until refreshed by browser
+            // await this.sendTokenToDb(token);
+            localStorage.setItem('INSTANCE_TOKEN', token);
+            permissionGranted = true;
+        }
+    } catch (err) {
+        console.log(err);
+        if (err.hasOwnProperty('code') && err.code === 'messaging/permission-default') console.log('You need to allow the site to send notifications');
+        else if (err.hasOwnProperty('code') && err.code === 'messaging/permission-blocked') console.log('Currently, the site is blocked from sending notifications. Please unblock the same in your browser settings');
+        else console.log('Unable to subscribe you to notifications');
+    } finally {
+        return permissionGranted;
+    }
+}
+</script>
+</body>
+
+</html>
